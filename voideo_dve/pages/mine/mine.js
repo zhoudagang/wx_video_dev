@@ -8,29 +8,11 @@ Page({
   },
   onLoad: function () {
     var me = this;
-    wx.showLoading({
-      title: '等一会~',
-    });
-
-    wx.request({
-      url: app.serverUrl + "/user/queryUserInfoById",
-      method: "POST",
-      data: {
-        userid: app.userinfo.id
-      },
-      header: {
-        'content-type': 'application/json' // 默认值
-      },
-      success: function (res) {
-        wx.hideLoading();
-        console.log(res.data);
-      
-      }
-    })
-
-
-
-
+    var userinfo = app.globalData.userInfo;
+    console.log(userinfo);
+    me.setData({
+      faceUrl :  userinfo.data.avatarurl
+    })  
   },
 
   // 上传头像

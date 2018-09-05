@@ -1,51 +1,36 @@
 //app.js
 App({
   onLaunch: function () {
-    // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
 
+    var that = this;
     // 登录
     wx.login({
+      
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      }
-    })
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              // 可以将 res 发送给后台解码出 unionId
-              this.globalData.userInfo = res.userInfo
 
-              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-              // 所以此处加入 callback 以防止这种情况
-              if (this.userInfoReadyCallback) {
-                this.userInfoReadyCallback(res)
-              }
-            }
-          })
-        }
+        console.log(res)
+        wx.request({
+          url: that.globalData.wx_url_1 + res.code + that.globalData.wx_url_2,
+          success: res => {
+            that.globalData.openid = res.data.openid;
+            console.log(res)
+          }
+        })
       }
     })
+
   },
+  // AppID(小程序ID)	AppSecret(小程序密钥)	 建议不要以明文存储，推荐放在DB
   globalData: {
-    userInfo: null
-  },
-  serverUrl:"http://zhougang.tunnel.echomod.cn",
-  userInfo:null,
-  
-  setGlobalUserInfo: function (user) {
-    wx.setStorageSync("userInfo", user);
+    openid: 0,
+    wx_url_1: 'https://api.weixin.qq.com/sns/jscode2session?appid=wxd994f9ee4728adc2&secret=9b07175849b1a8689556e1d2b5f8e94b&js_code=',
+    wx_url_2: '&grant_type=authorization_code',
+    userInfo : ""
   },
 
-  getGlobalUserInfo: function () {
-    return wx.getStorageSync("userInfo");
-  }
+  serverUrl :"http://zhougang.tunnel.echomod.cn"
+
 
 
 
