@@ -26,31 +26,24 @@ Page({
   },
   bindGetUserInfo: function (e) {
     if (e.detail.userInfo) {
-      //用户按了允许授权按钮
-      var that = this;
-      //插入登录的用户的相关信息到数据库
-      wx.request({
-        url: getApp().serverUrl + '/user/insertWxUser',
-        data: {
-            openid: getApp().globalData.openid,
-            nickname: e.detail.userInfo.nickName,
-            avatarurl: e.detail.userInfo.avatarUrl,
-            province: e.detail.userInfo.province,
-            city: e.detail.userInfo.city,
-            gender: e.detail.userInfo.gender
-        },
-        header: {
-          'content-type': 'application/json'
-        },
+      wx.login({
         success: function (res) {
-          //从数据库获取用户信息
-          that.queryUsreInfo();
-          console.log("插入小程序登录用户信息成功！");
+          var code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
+          wx.getUserInfo({
+            success: function (res) {
+              var iv = res.iv;
+              var encryptedData = res.encryptedData;
+              // 下面开始调用注册接口
+              wx.request({
+                url: getApp().serverUrl + '/user/register',
+                data: { code: code, encryptedData: encryptedData, iv: iv }, // 设置请求的 参数
+                success: (res) => {
+                
+                }
+              })
+            }
+          })
         }
-      });
-      //授权成功后，跳转进入小程序首页
-      wx.redirectTo({
-        url: '../index/index'
       })
     } else {
       //用户按了拒绝按钮
@@ -80,6 +73,7 @@ Page({
       success: function (res) {
        // console.log(res.data);
         getApp().globalData.userInfo = res.data;
+        wx.setStorageSync('userInfo', res.data);
       }
     })
   },

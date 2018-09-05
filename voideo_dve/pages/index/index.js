@@ -1,14 +1,31 @@
 //index.js
 //获取应用实例
 const app = getApp()
-
 Page({
+
+  /**
+   * 页面的初始数据
+   */
   data: {
-  
+    userInfo: {}
   },
-  onLoad : function () {
-    var that = this;
-     var userinfo = getApp().globalData.userInfo;
-    console.log(userinfo);
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    let that = this
+    let userInfo = wx.getStorageSync('userInfo')
+    if (!userInfo) {
+      wx.navigateTo({
+        url: "/pages/login/login"
+      })
+    } else {
+      that.setData({
+        userInfo: userInfo
+      })
+    }
   }
+
+
+ 
 })

@@ -82,14 +82,7 @@ Page({
               title: '登陆成功',
               icon: "none",
               duration: 3000
-            }),
-
-            app.userinfo = res.data.data;
-            
-            wx.navigateTo({
-              url: '../mine/mine',
             })
-
           } else if (status == 500) {
             wx.showToast({
               title: res.data.msg,
