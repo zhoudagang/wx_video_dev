@@ -13,23 +13,25 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     var that = this;
     // 查看是否授权
     wx.getSetting({
-      success: function (res) {
+      success: function(res) {
         if (res.authSetting['scope.userInfo']) {
           wx.getUserInfo({
-            success: function (res) {
+            success: function(res) {
               //从数据库获取用户信息
-              that.queryUsreInfo();    
+              that.queryUsreInfo();
               that.setData({
                 userInfo: res.userInfo
-              })  
-                        
+              })
+              wx.navigateTo({
+                url: '../mine/mine',
+              })
             }
           });
-        }else{
+        } else {
           wx.redirectTo({
             url: '../login/login',
           })
@@ -42,65 +44,65 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-    
+  onReady: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-    
+  onShow: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-    
+  onHide: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-    
+  onUnload: function() {
+
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-    
+  onPullDownRefresh: function() {
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-    
+  onReachBottom: function() {
+
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-    
+  onShareAppMessage: function() {
+
   },
   //获取用户信息接口
-  queryUsreInfo: function () {
+  queryUsreInfo: function() {
+    var opneid = wx.getStorageSync("openid");
     wx.request({
       url: getApp().serverUrl + '/user/queryUserInfoByOpenId',
       data: {
-        openid: getApp().globalData.openid
+        openid: opneid
       },
       header: {
         'content-type': 'application/json'
       },
-      success: function (res) {
-        console.log(res.data);
-        getApp().globalData.userInfo = res.data;
-      
+      success: function(res) {
+        wx.setStorageSync("userInfo", res.data.data);
+
       }
     })
   },

@@ -1,5 +1,6 @@
 {
   "pages":[
+        "pages/chooseBgm/chooseBgm",
     "pages/index/index",
     "pages/login/login",
     "pages/userRegist/regist",
@@ -10,6 +11,7 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "短视频",
     "navigationBarTextStyle":"black"
-  }
+  },
+"debug":true
  
 }
