@@ -1,22 +1,40 @@
 //app.js
 App({
- 
-  // AppID(小程序ID)	AppSecret(小程序密钥)	 建议不要以明文存储，推荐放在DB
-  // globalData: {
-  //   openid: 0,
-  //   wx_url_1: 'https://api.weixin.qq.com/sns/jscode2session?appid=wxd994f9ee4728adc2&secret=9b07175849b1a8689556e1d2b5f8e94b&js_code=',
-  //   wx_url_2: '&grant_type=authorization_code',
-  //   userInfo: ""
-  // },
-  globalData: {
-    userInfo: null
+  onLaunch: function () {
+    // 展示本地存储能力
+    var logs = wx.getStorageSync('logs') || []
+    logs.unshift(Date.now())
+    wx.setStorageSync('logs', logs)
+    let that = this;
+
+    // 登录
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        var code = res.code;
+        console.log(res);
+        // 下面开始调用注册接口
+        wx.request({
+          url: that.serverUrl + '/user/login',
+          data: { code: code }, // 设置请求的 参数
+          success: (res) => {
+            console.log(res);
+            if (res.statusCode == 200) {
+              that.openid = res.data.data
+            } else {
+              wx.showToast({
+                title: '网络错误',
+                icon: none
+              })
+            }
+          }
+        })
+      }
+    })
   },
-  serverUrl: "http://zhougang.tunnel.echomod.cn"
-
-
-
-
-
-
-
+  globalData : {
+    userInfo : null,
+    openid : 0
+  },
+  serverUrl: "http://zhougang.tunnel.echomod.cn",
 })
