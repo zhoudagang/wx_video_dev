@@ -70,10 +70,11 @@ Page({
   },
   //获取用户信息接口
   queryUsreInfo: function() {
+    var openid =wx.getStorageSync("openid");
     wx.request({
       url: getApp().serverUrl + '/user/queryUserInfoByOpenId',
       data: {
-        openid: getApp().globalData.openid
+        openid: openid
       },
       header: {
         'content-type': 'application/json'

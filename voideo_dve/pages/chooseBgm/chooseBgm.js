@@ -2,8 +2,10 @@ const app = getApp()
 
 Page({
   data: {
-    bgmList:{},
-    serverUrl:""
+    bgmList: {},
+    serverUrl: "",
+    poster: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKrRoI4mO0SnLUS5wqrpCNYsUxIrlXY2uzB8xYsLUjhLK3Xt37H7eNPyWlm5TGlcmBahNU5wM3riag/132',
+    videoParams: {}
 
   },
   onReady: function(e) {
@@ -12,6 +14,11 @@ Page({
   },
   onLoad: function(res) {
     var me = this;
+    me.setData({
+      videoParams: res
+    })
+    console.log(res);
+
     wx.showLoading({
       title: '努力加载中~',
     })
@@ -19,7 +26,6 @@ Page({
     wx.request({
       url: serverUrl + '/bgm/qureryBgmList',
       success: (res) => {
-        console.log(res);
         if (res.data.status == 200) {
           wx.hideLoading();
           var list = res.data.data;
@@ -37,12 +43,62 @@ Page({
       }
     })
   },
-  data: {
-    poster: 'http://y.gtimg.cn/music/photo_new/T002R300x300M000003rsKF44GyaSk.jpg?max_age=2592000',
-    name: '此时此刻',
-    author: '许巍',
-    src: 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb.mp3?guid=ffffffff82def4af4b12b3cd9337d5e7&uin=346897220&vkey=6292F51E1E384E06DCBDC9AB7C49FD713D632D313AC4858BACB8DDD29067D3C601481D36E62053BF8DFEAF74C0A5CCFADD6471160CAF3E6A&fromtag=46',
+  upload: function(res) {
+    var me = this;
+    var bgmId = res.detail.value.bgmId;
+    var desc = res.detail.value.desc;
+
+    var duration = me.data.videoParams.duration; //秒
+    var temHeight = me.data.videoParams.tmpHeight;
+    var temWidth = me.data.videoParams.tmpWidth;
+    var tempVideoUrl = me.data.videoParams.tempVideoUrl;
+    var tempCoverUrl = me.data.videoParams.tempCoverUrl;
+    console.log(tempVideoUrl)
+
+    //开始上传
+    wx.showLoading({
+      title: '等一会~',
+    })
+    var serverUrl = app.serverUrl;
+    var user = wx.getStorageSync("userInfo");
+    console.log(user)
+    wx.uploadFile({
+      url: serverUrl + "/video/upload" ,
+      filePath: tempVideoUrl,
+      formData: {
+        userId:user.id,
+        bgmId: bgmId,
+        videoSeconds: duration,
+        videoWidth: temWidth,
+        videoHeight: temHeight,
+        desc: desc
+      },
+      name: 'file',
+      header: {
+        'content-type': 'application/json' // 默认值
+      },
+      success: function(res) {
+       // var data = JSON.parse(res.data);
+        if (res.data.status == 200) {
+          wx.hideLoading();
+          wx.showToast({
+            title: "上传成功",
+            icon: "success"
+          })
+   
+        } else {
+          wx.hideLoading();
+          wx.showToast({
+            title: "上传失败",
+            icon: "none"
+          })
+        }
+
+      }
+    })
+
   }
+
 
 
 })

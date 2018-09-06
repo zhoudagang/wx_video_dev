@@ -36,5 +36,5 @@ App({
       }
     })
   },
-  serverUrl: "http://zhougang.tunnel.echomod.cn",
+  serverUrl: "http://192.168.0.109",
 })

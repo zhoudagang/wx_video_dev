@@ -26,10 +26,10 @@ Page({
       success: function(res) {
         console.log(res);
         var duration = res.duration; //秒
-        var height = res.height;
-        var width = res.width;
-        var size = res.size;
-        var tempFilePath = res.tempFilePath;
+        var temHeight = res.height;
+        var temWidth = res.width;
+        var tempVideoUrl = res.tempFilePath;
+        var tempCoverUrl = res.thumbTempFilePath;
 
         if (duration < 1) {
           wx.showToast({
@@ -40,7 +40,13 @@ Page({
             title: '您这是上传一个电影了吗~'
           })
         } else {
-
+          wx.navigateTo({
+            url: '../chooseBgm/chooseBgm?duration=' + duration
+              + "&tmpHeight=" + temHeight
+              + "&tmpWidth=" + temWidth
+              + "&tempVideoUrl=" + tempVideoUrl
+              + "&tempCoverUrl=" + tempCoverUrl
+          })
         }
 
       }
