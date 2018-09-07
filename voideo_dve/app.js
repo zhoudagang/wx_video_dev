@@ -36,5 +36,5 @@ App({
       }
     })
   },
-  serverUrl: "http://192.168.0.109",
+  serverUrl: "http://27a6cf3f.ngrok.io",
 })

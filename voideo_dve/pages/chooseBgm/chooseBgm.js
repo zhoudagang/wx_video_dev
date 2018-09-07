@@ -79,7 +79,8 @@ Page({
       },
       success: function(res) {
        // var data = JSON.parse(res.data);
-        if (res.data.status == 200) {
+       console.log(res)
+        if (res.statusCode == 200) {
           wx.hideLoading();
           wx.showToast({
             title: "上传成功",
