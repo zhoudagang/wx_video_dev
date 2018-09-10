@@ -36,5 +36,5 @@ App({
       }
     })
   },
-  serverUrl: "http://27a6cf3f.ngrok.io",
+  serverUrl: "http://zhoudagang.tunnel.echomod.cn",
 })

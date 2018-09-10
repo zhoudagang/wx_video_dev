@@ -1,5 +1,7 @@
 {
   "pages":[
+    "pages/videoinfo/videoinfo",
+        "pages/searchVideo/searchVideo",
     "pages/index/index",
     "pages/login/login",
      "pages/chooseBgm/chooseBgm",

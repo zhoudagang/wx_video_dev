@@ -17,7 +17,6 @@ Page({
     me.setData({
       videoParams: res
     })
-    console.log(res);
 
     wx.showLoading({
       title: '努力加载中~',
@@ -45,7 +44,7 @@ Page({
   },
   upload: function(res) {
     var me = this;
-    var bgmId = res.detail.value.bgmId;
+    var bgmId = res.detail.value.bmgId;
     var desc = res.detail.value.desc;
 
     var duration = me.data.videoParams.duration; //秒
@@ -53,15 +52,12 @@ Page({
     var temWidth = me.data.videoParams.tmpWidth;
     var tempVideoUrl = me.data.videoParams.tempVideoUrl;
     var tempCoverUrl = me.data.videoParams.tempCoverUrl;
-    console.log(tempVideoUrl)
-
     //开始上传
     wx.showLoading({
       title: '等一会~',
     })
     var serverUrl = app.serverUrl;
     var user = wx.getStorageSync("userInfo");
-    console.log(user)
     wx.uploadFile({
       url: serverUrl + "/video/upload" ,
       filePath: tempVideoUrl,
@@ -78,14 +74,16 @@ Page({
         'content-type': 'application/json' // 默认值
       },
       success: function(res) {
-       // var data = JSON.parse(res.data);
-       console.log(res)
-        if (res.statusCode == 200) {
-          wx.hideLoading();
+       var data = JSON.parse(res.data);
+        if (data.status == 200) {
           wx.showToast({
             title: "上传成功",
             icon: "success"
           })
+          wx.navigateBack({
+            delta: 1
+          })
+      
    
         } else {
           wx.hideLoading();

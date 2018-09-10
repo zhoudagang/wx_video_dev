@@ -7,7 +7,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    userInfo: {}
+    userInfo: {},
+    // 用于分页的属性
+    totalPage: 1,
+    page: 1,
+    videoList: [],
+    screenWidth: 350,
+    serverUrl: ""
   },
 
   /**
@@ -26,9 +32,7 @@ Page({
               that.setData({
                 userInfo: res.userInfo
               })
-              wx.navigateTo({
-                url: '../mine/mine',
-              })
+              
             }
           });
         } else {
@@ -37,52 +41,82 @@ Page({
           })
         }
       }
+// http://zhoudagang.tunnel.echomod.cn/180905FD7Y4GTX1P/video/5c3b5221-3944-4ea0-8b4a-95465c23f3e4.mp4
+    });
 
+    var me = this;
+    var screenWidth = wx.getSystemInfoSync().screenWidth;
+    me.setData({
+      screenWidth: screenWidth,
+    });
+    // 获取当前的分页数
+    var page = me.data.page;
+    me.getAllVideoList(page);
+  },
+
+
+  onPullDownRefresh: function () {
+    wx.showNavigationBarLoading();
+    this.getAllVideoList(1);
+    console.log("下拉中。。")
+  },
+
+  onReachBottom: function () {
+    console.log("上拉中。。")
+    var me = this;
+    var currentPage = me.data.page;
+    var totalPage = me.data.totalPage;
+    console.log(currentPage);
+    console.log(totalPage);
+    // 判断当前页数和总页数是否相等，如果想的则无需查询
+    if (currentPage === totalPage) {
+      wx.showToast({
+        title: '已经没有视频啦~~',
+        icon: "none"
+      })
+      return;
+    }
+
+    var page = currentPage + 1;
+
+    me.getAllVideoList(page);
+  },
+  getAllVideoList: function (page) {
+    var me = this;
+    var serverUrl = app.serverUrl;
+    wx.showLoading({
+      title: '请等待，加载中...',
+    });
+
+    wx.request({
+      url: serverUrl + '/video/showAll?page=' + page,
+      method: "POST",
+      success: function (res) {
+        wx.hideLoading();
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();
+
+        console.log(res);
+
+        // 判断当前页page是否是第一页，如果是第一页，那么设置videoList为空
+        if (page === 1) {
+          me.setData({
+            videoList: []
+          });
+        }
+
+        var videoList = res.data.data.rows;
+        var newVideoList = me.data.videoList;
+
+        me.setData({
+          videoList: newVideoList.concat(videoList),
+          page: page,
+          totalPage: res.data.data.total,
+          serverUrl: serverUrl
+        });
+      }
     })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {
-
-  },
-
   /**
    * 用户点击右上角分享
    */
